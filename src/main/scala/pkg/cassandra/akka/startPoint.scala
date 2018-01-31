@@ -1,17 +1,26 @@
 package pkg.cassandra.akka
+import java.sql.ResultSet
+
 import akka.actor._
 import akka.actor.{ActorRef, ActorSystem, Props}
+import com.datastax.driver.core.ResultSet
 import pkg.cassandra.akka.Simple.session
 
 class Initiator(FireQuery: ActorRef, query: String){
 
   session.execute("DROP TABLE IF EXISTS base_pos_data;")
-  session.execute("CREATE TABLE IF NOT EXISTS base_pos_data " +
+/*  session.execute("CREATE TABLE IF NOT EXISTS base_pos_data " +
     "(year int PRIMARY KEY ,month int,day int,age int,frequency int," +
     "income int,value_segment int,brand text,category text,class text," +
     "style text,color_type text,choice_code int,color_family text,tier text," +
     "region text,location text,tx_time timeuuid,tx_id int,unit int,Basket_value int)" +
-    "WITH caching = { 'keys' : 'ALL', 'rows_per_partition' : '10' };")
+    "WITH caching = { 'keys' : 'ALL', 'rows_per_partition' : '10' };")*/
+
+    session.execute("CREATE TABLE IF NOT EXISTS base_pos_data(year int, month int,day int,age int,frequency int," +
+    " income int,value_segment int,brand text,category text,class text, style text,color_type text,choice_code int," +
+    "color_family text,tier text, region text,location text,tx_time timeuuid,tx_id int,unit int," +
+    "Basket_value int, PRIMARY KEY ((year, age, brand), month, day, region, location))" +
+    " WITH caching = { 'keys' : 'ALL', 'rows_per_partition' : '10' };")
 
   session.execute(
     "insert into base_pos_data (year, month, day, age, frequency , income, value_segment ," +
@@ -35,4 +44,3 @@ object Initiator extends App{
   val FireQuery = _system.actorOf(Props[SubmitActor], "QuerySubmit")
   val start = _system.actorOf(Props[Initiator](new Initiator(FireQuery, "select * from base_pos_data;")))
 }
-

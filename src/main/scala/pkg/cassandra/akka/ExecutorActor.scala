@@ -21,3 +21,4 @@ class ExecutorActor(query: String) extends Actor {
   }
 
 }
+

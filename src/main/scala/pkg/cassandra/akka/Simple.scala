@@ -6,16 +6,22 @@ object Simple extends App {
     .withClusterName("myCluster")
     .addContactPoint("localhost")
     .build
-  val session = cluster.connect("keyspaceTest")
+  val session = cluster.connect("Test")
 
   //  session.execute("CREATE KEYSPACE keyspaceTest WITH replication = {'class': 'SimpleStrategy', 'replication_factor': 2};")
   session.execute("DROP TABLE IF EXISTS base_pos_data;")
-  session.execute("CREATE TABLE IF NOT EXISTS base_pos_data " +
+/*  session.execute("CREATE TABLE IF NOT EXISTS base_pos_data " +
   "(year int PRIMARY KEY ,month int,day int,age int,frequency int," +
   "income int,value_segment int,brand text,category text,class text," +
     "style text,color_type text,choice_code int,color_family text,tier text," +
-    "region text,location text,tx_time timeuuid,tx_id int,unit int,Basket_value int)" +
-    "WITH caching = { 'keys' : 'ALL', 'rows_per_partition' : '10' };")
+    "region text,location text,tx_time timeuuid,tx_id int,unit int,Basket_value int PRIMARY KEY ((year), month, day, region, location));" +
+    "WITH caching = { 'keys' : 'ALL', 'rows_per_partition' : '10' };")*/
+
+  session.execute("CREATE TABLE IF NOT EXISTS base_pos_data(year int, month int,day int,age int,frequency int," +
+    " income int,value_segment int,brand text,category text,class text, style text,color_type text,choice_code int," +
+    "color_family text,tier text, region text,location text,tx_time timeuuid,tx_id int,unit int," +
+    "Basket_value int, PRIMARY KEY ((year, age, brand), month, day, region, location))" +
+    " WITH caching = { 'keys' : 'ALL', 'rows_per_partition' : '10' };")
 
   session.execute(
     "insert into base_pos_data (year, month, day, age, frequency , income, value_segment ," +
@@ -30,6 +36,8 @@ object Simple extends App {
   session.execute(
     "INSERT INTO sample_times (a,b,c,d) VALUES (1, toUnixTimestamp(now()), 50554d6e-29bb-11e5-b345-feff819cdc9f, toTimestamp(now()));")
 
+  val result = session.execute("select * from base_pos_data;")
+  println(result.all)
 
   cluster.close()
 }
