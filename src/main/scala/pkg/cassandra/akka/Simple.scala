@@ -10,12 +10,6 @@ object Simple extends App {
 
   //  session.execute("CREATE KEYSPACE keyspaceTest WITH replication = {'class': 'SimpleStrategy', 'replication_factor': 2};")
   session.execute("DROP TABLE IF EXISTS base_pos_data;")
-/*  session.execute("CREATE TABLE IF NOT EXISTS base_pos_data " +
-  "(year int PRIMARY KEY ,month int,day int,age int,frequency int," +
-  "income int,value_segment int,brand text,category text,class text," +
-    "style text,color_type text,choice_code int,color_family text,tier text," +
-    "region text,location text,tx_time timeuuid,tx_id int,unit int,Basket_value int PRIMARY KEY ((year), month, day, region, location));" +
-    "WITH caching = { 'keys' : 'ALL', 'rows_per_partition' : '10' };")*/
 
   session.execute("CREATE TABLE IF NOT EXISTS base_pos_data(year int, month int,day int,age int,frequency int," +
     " income int,value_segment int,brand text,category text,class text, style text,color_type text,choice_code int," +
